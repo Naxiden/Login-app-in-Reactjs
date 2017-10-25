@@ -73,7 +73,7 @@ logout(){
   firebase.auth().signOut();
   var lout = document.getElementById('logout');
   lout.classList.add('hide');
-  this.setState({err:'logout succesful, thanks for visit'})
+  this.setState({err:'logout successful, thanks for visit'})
 }
 
   constructor(props){
@@ -85,8 +85,26 @@ logout(){
     this.login = this.login.bind(this);
     this.signup = this.signup.bind(this);
     this.logout = this.logout.bind(this);
+    this.google = this.google.bind(this);
   }
 
+google(){
+  console.log("am from google");
+
+var provider = new firebase.auth.GoogleAuthProvider();
+var promise = firebase.auth().signInWithPopup(provider);
+
+promise.then(result=>{
+  var user = result.user;
+  firebase.database().ref('users/'+user.uid).set({
+  email:user.email,
+  name:user.displayName})
+})
+promise.catch(e=>{
+  var err = e.message
+  console.log(err)
+})
+}
 
 
   render(){
@@ -99,6 +117,7 @@ logout(){
         <button onClick={this.login}>Log in</button>
         <button onClick={this.signup}>Sing up</button>
         <button onClick={this.logout} id="logout" className="hide">Log out</button>
+        <button onClick={this.google} id="google" className="google">Sign up with google</button>
       </div>
     );
   }
