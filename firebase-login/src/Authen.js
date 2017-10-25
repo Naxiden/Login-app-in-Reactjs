@@ -15,13 +15,22 @@ class Authen extends Component {
 
 
 login(event) {
-//TODO: HANDLE PROMISE LOG IN
+
 const email = this.refs.email.value;
 const password = this.refs.password.value;
 console.log(email, password)
 
 const auth = firebase.auth()
 const promise = auth.signInWithEmailAndPassword(email, password);
+
+promise.then(user => {
+  var lout = document.getElementById('logout');
+  var err = "Welcome in Our Site "+ user.email
+  lout.classList.remove('hide');
+  this.setState({err: err})
+
+})
+
 promise.catch(e => {
   var err = e.message;
 console.log(err);
@@ -58,7 +67,13 @@ signup(){
       })
     });
 
+}
 
+logout(){
+  firebase.auth().signOut();
+  var lout = document.getElementById('logout');
+  lout.classList.add('hide');
+  this.setState({err:'logout succesful, thanks for visit'})
 }
 
   constructor(props){
@@ -69,6 +84,7 @@ signup(){
     };
     this.login = this.login.bind(this);
     this.signup = this.signup.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
 
@@ -76,13 +92,13 @@ signup(){
   render(){
     return(
       <div>
-        <h2>Am from Authen dang yo</h2>
+        <h2>Welcom in ReactJS login app</h2>
         <input id="email" ref="email" type="email" placeholder="Enter your email" /><br />
         <input id="pass" ref="password" type="password" placeholder="Enter your password" /><br />
         <p>{this.state.err}</p>
         <button onClick={this.login}>Log in</button>
         <button onClick={this.signup}>Sing up</button>
-        <button>Log out</button>
+        <button onClick={this.logout} id="logout" className="hide">Log out</button>
       </div>
     );
   }
