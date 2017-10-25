@@ -12,6 +12,8 @@ var config = {
 
 class Authen extends Component {
 
+
+
 login(event) {
 //TODO: HANDLE PROMISE LOG IN
 const email = this.refs.email.value;
@@ -29,6 +31,36 @@ this.setState({err:err});
 
 }
 
+signup(){
+
+  const email = this.refs.email.value;
+  const password = this.refs.password.value;
+  console.log(email, password)
+
+  const auth = firebase.auth();
+    const promise =  auth.createUserWithEmailAndPassword(email, password);
+
+    promise
+    .then(user =>{
+      var err = "Welcome"+ user.email;
+      firebase.database().ref('/users'+user.uid).set({
+        email: user.email
+      });
+      console.log(user)
+      this.setState({err: err});
+    });
+    promise
+    .catch(e =>{
+      var err = e.message;
+      console.log( err);
+      this.setState({
+        err: err
+      })
+    });
+
+
+}
+
   constructor(props){
     super(props);
 
@@ -36,6 +68,7 @@ this.setState({err:err});
       err:''
     };
     this.login = this.login.bind(this);
+    this.signup = this.signup.bind(this);
   }
 
 
@@ -48,7 +81,7 @@ this.setState({err:err});
         <input id="pass" ref="password" type="password" placeholder="Enter your password" /><br />
         <p>{this.state.err}</p>
         <button onClick={this.login}>Log in</button>
-        <button>Sing up</button>
+        <button onClick={this.signup}>Sing up</button>
         <button>Log out</button>
       </div>
     );
